@@ -9,5 +9,4 @@ The code to download a post containing only <strong>one</strong> image or video,
   
 But the code to download a collection of image(s)/video(s), is not efficient. It is reliable and will work well as it is based on the keywords that Instagram uses on the webpage.
 
-Stay dynamic,
-Vijay T S
+Stay dynamic,<br>Vijay T S
