@@ -95,25 +95,30 @@ def downloadCollection(soup):
 
 	scriptTag = soup.findAll("script")
 	scriptStr = str(scriptTag)
-	scriptList = scriptStr.split('"')
+	mediaList = scriptStr.split('"')
 
 	print("Getting the url of the image")
 
 	#Got the line of code below from stack overflow
-	imgURL = [i for i, e in enumerate(scriptList) if e == "display_url"]
+	imgURL = [i for i, e in enumerate(mediaList) if e == "display_url"]
 	imgURL = tuple(imgURL)
 	print("Got it!")
+
+	mediaTuple = list()	
+	for i in imgURL:
+		mediaTuple.append(mediaList[i+2])
+	mediaTuple = tuple(mediaTuple)
 	
 	imgNumber = 1
 
-	for i in imgURL:
+	for link in mediaTuple:
 		print("Naming the file")
 		fileName = datetime.datetime.now().strftime("%Y %m %d %H %M %S" + " " + str(imgNumber))
 		print("Saving the file in the same directory")
 		imageFile = open(fileName + ".jpeg", "wb")
 		
 		print("Reading the image")
-		imageFile.write(urllib.request.urlopen(scriptList[i+2]).read())
+		imageFile.write(urllib.request.urlopen(link).read())
 		print("Done")
 		imageFile.close()
 
@@ -121,22 +126,27 @@ def downloadCollection(soup):
 
 	vidNumber = 1
 
-	if "video_url" in scriptList:
+	if "video_url" in mediaList:
 		print("Getting the url of the video")
 
 		#Got the line of code below from stack overflow
-		vidURL = [i for i, e in enumerate(scriptList) if e == "video_url"]
+		vidURL = [i for i, e in enumerate(mediaList) if e == "video_url"]
 		vidURL = tuple(vidURL)
 		print("Got it!")
 
+		videoTuple = list()
 		for i in vidURL:
+			videoTuple.append(mediaList[i+2])
+		videoTuple = tuple(videoTuple)
+
+		for link in videoTuple:
 			print("Naming the file")
 			fileName = datetime.datetime.now().strftime("%Y %m %d %H %M %S" + " " + str(vidNumber))
 			print("Saving the file in the same directory")
 			imageFile = open(fileName + ".mp4", "wb")
 			
 			print("Reading the video")
-			imageFile.write(urllib.request.urlopen(scriptList[i+2]).read())
+			imageFile.write(urllib.request.urlopen(link).read())
 			print("Done")
 			imageFile.close()
 
