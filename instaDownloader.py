@@ -37,10 +37,16 @@ def makeSoup(url):
 	
 	# Downloading the webpage and parsing it using BeautifulSoup so that the program can grab the links
 	# of the images and videos
-	
-	link = urllib.request.urlopen(url)
-	soupMade = bs(link, "html.parser")
-	return soupMade
+	try:
+		link = urllib.request.urlopen(url)
+		soupMade = bs(link, "html.parser")
+	except Exception:
+		print("Invalid URL. Please make sure that the profile is public!")
+		return False
+	else:
+		return soupMade
+	finally:
+		pass
 
 def downloadSingleImage(soup):
 	
@@ -170,7 +176,10 @@ url = urlPrompt()
 
 # To download the webpage, we are calling this function.
 soup = makeSoup(url)
-print("Done parsing the website")
+if soup is not False:
+	print("Done parsing the website")
+else:
+	exit()
 
 # Now, according to the choice of the user, we are calling the respective functions
 if choice == "1":
