@@ -1,4 +1,7 @@
 # instaDownloader
+
+<b>Depricated</b>
+
 A non-API python script that will download images and videos from public instagram profiles.
 
 This is completely based on webcrawling. 
