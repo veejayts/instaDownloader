@@ -52,41 +52,48 @@ def downloadSingleImage(soup):
 	
 	# If there is only a single image in the instagram post, this function is called (the user provides this
 	# information). The link is present directly in the meta tag.
-	
-	for metaTag in soup.findAll("meta", {"property":"og:image"}):
-		print("Getting the url of the image")
-		picture = metaTag.get("content")
-		print("Got it!")
-		
-		print("Naming the file")
-		fileName = datetime.datetime.now().strftime("%Y %m %d %H %M %S")
-		print("Saving the file in the same directory")
-		imageFile = open(fileName + ".jpeg", "wb")
-		
-		print("Reading the image")
-		imageFile.write(urllib.request.urlopen(picture).read())
-		print("Done")
-		imageFile.close()
+	try: 
+		for metaTag in soup.findAll("meta", {"property":"og:image"}):
+			print("Getting the url of the image")
+			picture = metaTag.get("content")
+			print("Got it!")
+			
+			print("Naming the file")
+			fileName = datetime.datetime.now().strftime("%Y %m %d %H %M %S")
+			print("Saving the file in the same directory")
+			imageFile = open(fileName + ".jpeg", "wb")
+			
+			print("Reading the image")
+			imageFile.write(urllib.request.urlopen(picture).read())
+			print("Done")
+			imageFile.close()
+
+	except Exception:
+		print('Something went wrong!')
 
 def downloadSingleVideo(soup):
 
 	# If there is only a single video in the instagram post, this function is called (the user provides this
 	# information). The link is present directly in the meta tag.
 
-	for metaTag in soup.findAll("meta", {"property":"og:video"}):
-		print("Getting the url of the video")
-		video = metaTag.get("content")
-		print("Got it!")
-		
-		print("Naming the file")
-		fileName = datetime.datetime.now()#.strftime("%Y %m %d %H %M %S")
-		print("Saving the file in the same directory")
-		imageFile = open(fileName + ".mp4", "wb")
-		
-		print("Reading the video")
-		imageFile.write(urllib.request.urlopen(video).read())
-		print("Done")
-		imageFile.close()
+	try:
+		for metaTag in soup.findAll("meta", {"property":"og:video"}):
+			print("Getting the url of the video")
+			video = metaTag.get("content")
+			print("Got it!")
+			
+			print("Naming the file")
+			fileName = datetime.datetime.now()#.strftime("%Y %m %d %H %M %S")
+			print("Saving the file in the same directory")
+			imageFile = open(fileName + ".mp4", "wb")
+			
+			print("Reading the video")
+			imageFile.write(urllib.request.urlopen(video).read())
+			print("Done")
+			imageFile.close()
+
+	except Exception:
+		print('Something went wrong')
 
 def downloadCollection(soup):
 
@@ -99,65 +106,67 @@ def downloadCollection(soup):
 	# Here the program checks the webpage for a video and downloads the videos automatically if present. If 
 	# not, it downloads only the images.
 
-	scriptTag = soup.findAll("script")
-	scriptStr = str(scriptTag)
-	mediaList = scriptStr.split('"')
+	try:
+		scriptTag = soup.findAll("script")
+		scriptStr = str(scriptTag)
+		mediaList = scriptStr.split('"')
 
-	print("Getting the url of the image")
+		print("Getting the url of the image")
 
-	#Got the line of code below from stack overflow
-	imgURL = [i for i, e in enumerate(mediaList) if e == "display_url"]
-	imgURL = tuple(imgURL)
-	print("Got it!")
-
-	mediaTuple = list()	
-	for i in imgURL:
-		mediaTuple.append(mediaList[i+2])
-	mediaTuple = tuple(mediaTuple)
-	
-	imgNumber = 1
-
-	for link in mediaTuple:
-		print("Naming the file")
-		fileName = datetime.datetime.now().strftime("%Y %m %d %H %M %S" + " " + str(imgNumber))
-		print("Saving the file in the same directory")
-		imageFile = open(fileName + ".jpeg", "wb")
-		
-		print("Reading the image")
-		imageFile.write(urllib.request.urlopen(link).read())
-		print("Done")
-		imageFile.close()
-
-		imgNumber += 1
-
-	vidNumber = 1
-
-	if "video_url" in mediaList:
-		print("Getting the url of the video")
-
-		#Got the line of code below from stack overflow
-		vidURL = [i for i, e in enumerate(mediaList) if e == "video_url"]
-		vidURL = tuple(vidURL)
+		imgURL = [i for i, e in enumerate(mediaList) if e == "display_url"]
+		imgURL = tuple(imgURL)
 		print("Got it!")
 
-		videoTuple = list()
-		for i in vidURL:
-			videoTuple.append(mediaList[i+2])
-		videoTuple = tuple(videoTuple)
+		mediaTuple = list()	
+		for i in imgURL:
+			mediaTuple.append(mediaList[i+2].replace("\\u0026","&"))
+		mediaTuple = tuple(mediaTuple)
 
-		for link in videoTuple:
+		imgNumber = 1
+
+		for link in mediaTuple:
 			print("Naming the file")
-			fileName = datetime.datetime.now().strftime("%Y %m %d %H %M %S" + " " + str(vidNumber))
+			fileName = datetime.datetime.now().strftime("%Y %m %d %H %M %S" + " " + str(imgNumber))
 			print("Saving the file in the same directory")
-			imageFile = open(fileName + ".mp4", "wb")
+			imageFile = open(fileName + ".jpeg", "wb")
 			
-			print("Reading the video")
+			print("Reading the image")
 			imageFile.write(urllib.request.urlopen(link).read())
 			print("Done")
 			imageFile.close()
 
-			vidNumber += 1
+			imgNumber += 1
 
+		vidNumber = 1
+
+		if "video_url" in mediaList:
+			print("Getting the url of the video")
+
+			#Got the line of code below from stack overflow
+			vidURL = [i for i, e in enumerate(mediaList) if e == "video_url"]
+			vidURL = tuple(vidURL)
+			print("Got it!")
+
+			videoTuple = list()
+			for i in vidURL:
+				videoTuple.append(mediaList[i+2].replace("\\u0026","&"))
+			videoTuple = tuple(videoTuple)
+
+			for link in videoTuple:
+				print("Naming the file")
+				fileName = datetime.datetime.now().strftime("%Y %m %d %H %M %S" + " " + str(vidNumber))
+				print("Saving the file in the same directory")
+				imageFile = open(fileName + ".mp4", "wb")
+				
+				print("Reading the video")
+				imageFile.write(urllib.request.urlopen(link).read())
+				print("Done")
+				imageFile.close()
+
+				vidNumber += 1
+
+	except Exception:
+		print('Something went wrong')
 # This loop is present to ensure that the user is entering the correct choice so that they don't break
 # the program. 
 
