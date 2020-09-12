@@ -1,4 +1,6 @@
-# instaDownloader
+# DEPRECATED
+
+## instaDownloader
 
 A non-API python script that will download images and videos from public instagram profiles.
 
